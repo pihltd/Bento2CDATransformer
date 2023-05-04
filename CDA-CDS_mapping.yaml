@@ -1,0 +1,111 @@
+data_source: CDS
+data_target: CDA
+  field_mappings:
+    file_id: #CDS
+      file: #CDA domain/node
+        - id #CDA field
+        - identifer.field_name
+        - identifier.value
+        - drs_uri
+    file_name:
+      file:
+        - label
+    file_type:
+      file:
+        - file_format
+    file_size:
+      file:
+        - byte_size
+    md5sum:
+      file:
+        - checksum
+    study_data_types:
+      file:
+        - data_modality
+    phs_accession:
+      file:
+        - dbgap_accession_number
+    program_name:
+      file:
+        - associated_projects
+      specimen:
+        - associated_project
+    study_name:
+      file:
+        - associated_projects
+      research_subject:
+        - member_of_research_project
+    participant_id:
+      subject:
+        - id
+        - identifier.value
+      research_subject:
+        - id
+        - identifier.value
+    organism_species:
+      subject:
+        - species
+    gender:
+      subject:
+        - sex
+    race:
+      subject:
+        - race
+    ethnicity:
+      subject:
+        - ethnicity
+    vital_status:
+      subject:
+        - vital_status
+    disease_type:
+      research_subject:
+        - primary_diagnosis_condition
+    primary_site:
+      research_subject:
+        - primary_diagnosis_site
+    diagnosis_id:
+      diagnosis:
+        - id
+        - identifier.value
+    primary_diagnosis:
+      diagnosis:
+        - primary_diagnosis
+    age_at_diagnosis:
+      diagnosis:
+        - age_at_diagnosis
+    morphology:
+      diagnosis:
+        - morphology
+    tumor_stage_clinical_m:
+      diagnosis:
+        - stage
+    tumor_stage_clinical_n:
+      diagnosis:
+       - stage
+    tumor_stage_clinical_t:
+      diagnosis:
+       - stage
+    tumor_grade:
+      diagnosis:
+        - grade   
+  
+    sample_id:
+      specimen:
+        - id
+        - identifier.value
+    sample_age_at_collection:
+      specimen:
+        - days_to_collection
+    sample_anatomic_site:
+      specimen:
+        - anatomical_site
+    sample_type:
+      specimen:
+        - specimen_type
+    derived_from_specimen:
+      specimen:
+        - derived_from_specimen
+  
+  
+  
+  
