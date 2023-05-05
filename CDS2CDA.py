@@ -24,6 +24,7 @@ def fileInfoParse(graphqldata):
 
 def main(args):
     cdsq.init()
+    cdajson = {}
 
 
     if args.verbose:
