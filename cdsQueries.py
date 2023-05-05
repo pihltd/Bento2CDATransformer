@@ -1,4 +1,13 @@
 def init():
+    global testquery
+    testquery = """
+    {
+        program{
+            program_acronym
+        }
+    }
+    """
+    
     global file_info
     file_info ="""
 {
