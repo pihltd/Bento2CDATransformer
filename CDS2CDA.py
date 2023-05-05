@@ -4,6 +4,7 @@ import json
 import argparse
 import pprint
 from python_graphql_client import GraphqlClient
+import cdsQueries as cdsq
 
 CDSAPI = "https://dataservice.datacommons.cancer.gov/v1/graphql/"
 
@@ -18,6 +19,8 @@ def readTransformFile(yamlfile):
     return transformdata
 
 def main(args):
+    cdsq.init()
+
     transformfile = args.transformfile
     data = readTransformFile(transformfile)
     pprint.pprint(data)
@@ -31,6 +34,10 @@ def main(args):
     """
     data2 = getAPIJSON(CDSAPI, testquery)
     pprint.pprint(data2)
+
+    pprint.pprint(cdsq.file_info)
+    data3 = getAPIJSON(CDSAPI,cdsq.file_info)
+    pprint.pprint(data3)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
