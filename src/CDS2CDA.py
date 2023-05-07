@@ -23,7 +23,6 @@ def readTransformFile(yamlfile):
 
 def getMappedKey(sourcefield, mappingjson):
     # Will return a list of CDA field name from the mapping.
-    finallist = []
     mapping = mappingjson[sourcefield]
     for node, mappinglist in mapping.items():
         return mappinglist

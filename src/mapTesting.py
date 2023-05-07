@@ -21,8 +21,7 @@ def main(args):
 
 
     #Bring in the yaml file and transform it
-    transformfile = args.transformfile
-    mappingdata = cdt.readTransformFile(transformfile)
+    mappingdata = cdt.readTransformFile(args.transformfile)
     if args.verbose:
         pprint.pprint(mappingdata)
 
@@ -35,8 +34,8 @@ def main(args):
         }
     }
     """
-    studydata = cdt.getGraphQLJSON(CDSAPI, studyQuery)
-    tempjson = cdt.testingParse(studydata, mappingdata,'study')
+    #studydata = cdt.getGraphQLJSON(CDSAPI, studyQuery)
+    #tempjson = cdt.testingParse(studydata, mappingdata,'study')
     
 
 if __name__ == "__main__":
