@@ -35,6 +35,13 @@ field_mappings:
       - associated_projects
     research_subject:
       - member_of_research_project
+  study_acronym:
+    file:
+      - associated_projects
+    research_subject:
+      - member_of_research_project
+    subject:
+      - subject_associated_projects
   participant_id:
     subject:
       - id
@@ -88,7 +95,6 @@ field_mappings:
   tumor_grade:
     diagnosis:
       - grade   
-
   sample_id:
     specimen:
       - id
