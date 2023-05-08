@@ -34,8 +34,9 @@ def main(args):
         }
     }
     """
-    #studydata = cdt.getGraphQLJSON(CDSAPI, studyQuery)
-    #tempjson = cdt.testingParse(studydata, mappingdata,'study')
+    studydata = cdt.getGraphQLJSON(CDSAPI, studyQuery)
+    tempjson = cdt.testingParse(studydata, mappingdata,'study')
+    pprint.pprint(tempjson)
     
 
 if __name__ == "__main__":
