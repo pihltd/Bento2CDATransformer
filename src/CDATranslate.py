@@ -57,6 +57,7 @@ def testingParse(graphqlresults, mappingdata, graphqlindex):
     #Experimental version of genericInfoParse.  
     finalarray = {}
     tempjson = {}
+    finallist = []
     for instance in graphqlresults['data'][graphqlindex]:
         for originalfield, originalvalue in instance.items():
             if isinstance(originalvalue, dict):
@@ -68,23 +69,29 @@ def testingParse(graphqlresults, mappingdata, graphqlindex):
             else:
                 #Not nested
                 print("Normal Parse")
-                cdanode, cdafieldlist = testingGetMappedKeys(originalfield, mappingdata)
-                for cdafield in cdafieldlist:
-                        tempjson[cdafield] = originalvalue
-                        finalarray[cdanode] = tempjson
-    return finalarray
+                cdafieldlist = testingGetMappedKeys(originalfield, mappingdata)
+                for entry in cdafieldlist:
+                    for cdadomain,cdafields in entry.items():
+                        for cdafield in cdafields:
+                            tempjson[cdafield]= originalvalue 
+                            finalarray[cdadomain] = tempjson
+                            finallist.append(finalarray)
+                            tempjson = {}
+                            finalarray = {}
+    return finallist
                 
 
 def testingGetMappedKeys(sourcefield, fullmappingjson):
     #Experimental version of getMappedKeys
     mappingjson = fullmappingjson['field_mappings']
     mapping = mappingjson[sourcefield]
+    mappinglist = []
     # mapping should now be a list of dict
-    print(type(mapping))
     for entry in mapping:
         #cdanode is the CDA domain, cdafield is a list of fields from that node
         for cdanode, cdafieldlist in entry.items():
-            return cdanode, cdafieldlist
+            mappinglist.append({cdanode:cdafieldlist})
+    return mappinglist
         
 
 def validateJSON(schema, cdajson):
