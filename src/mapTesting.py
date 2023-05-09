@@ -6,56 +6,77 @@ import pprint
 import cdsQueries as cdsq
 import CDATranslate as cdt
 import CDA_dataclass as dc
+from dataclasses import  asdict
+import CDSJSON_model as model
+#import dataclasses
 
 def main(args):
-    #Empty dictionaries for each of the CDA nodes
-    cdafile = {}
-    cdadiagnosis = {}
-    cdatreatment = {}
-    cdaspecimen = {}
-    cdasubject = {}
-    cdaresearchsubject = {}
     #Empty final JSON doc
     cdafinal = {}
 
     CDSAPI = "https://dataservice.datacommons.cancer.gov/v1/graphql/"
 
+    model.init()
+    cdsq.init()
+    mappingdata = cdt.readTransformFile(args.transformfile)
+
+    filedata = cdt.getGraphQLJSON(CDSAPI,cdsq.file_info)
+    templist = []
+    for file in filedata['data']['file']:
+        newJSON = cdt.parseEntry(file, mappingdata, model.file, model.identifiers)
+        templist.append(newJSON)
+    cdafinal['file'] = templist
+    pprint.pprint(cdafinal)
+
+
+
 
     #Bring in the yaml file and transform it
-    mappingdata = cdt.readTransformFile(args.transformfile)
-    if args.verbose:
-        pprint.pprint(mappingdata)
+    #mappingdata = cdt.readTransformFile(args.transformfile)
+    #if args.verbose:
+    #    pprint.pprint(mappingdata)
 
     #Question 1 - For one to many mappings, can the node information be used?  For example, distinguishing between CDA's subject and research_subject fields.
     # A CDS study maps to file.associated_projects and to research_subject.member_of_research_project
-    studyQuery = """
-    {
-        study{
-            study_name
-        }
-    }
-    """
-    studydata = cdt.getGraphQLJSON(CDSAPI, studyQuery)
-    tempjson = cdt.testingParse(studydata, mappingdata,'study')
-    pprint.pprint(tempjson)
+    #studyQuery = """
+    #{
+    #    study{
+    #        study_name
+    #    }
+    #}
+    #"""
+    #studydata = cdt.getGraphQLJSON(CDSAPI, studyQuery)
+    #tempjson = cdt.testingParse(studydata, mappingdata,'study')
+    #pprint.pprint(tempjson)
 
     #Question 2 - Can a dataclass work better than a custom json job
 
-    fileQuery = """
-    {
-        file{
-            file_id
-        }
-    }
-    """
+    #fileQuery = """
+    #{
+    #    file{
+    #        file_id
+    #    }
+    #}
+    #"""
 
-    filelist = dc.Files
-    filedata = cdt.getGraphQLJSON(CDSAPI, fileQuery)
-    for file in filedata['data']['file']:
-        filelist.id = file['file_id']
-
-    pprint.pprint(filelist)
-    pprint.pprint(filelist.File.id)
+    #filelist = dc.Files
+    #model.init()
+    #filelist = []
+    #filedata = cdt.getGraphQLJSON(CDSAPI, fileQuery)
+    #for file in filedata['data']['file']:
+    #    t = model.file
+    #    t['id'] = file['file_id']
+    #    filelist.append(t)
+    #pprint.pprint(filelist)
+        #t = dc.File()
+        #print(asdict(t))
+        #t.id = file['file_id']
+        #print(asdict(t))
+        #print(dataclasses.asdict(t))
+        #print(t.__dict__)
+        #pprint.pprint(t.id)
+        #r = t.to_dict(t)
+        #pprint.pprint(r)
 
 
     

@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from typing import List
 
 @dataclass
@@ -8,7 +8,7 @@ class cdaidentifier:
     value: str
 
 @dataclass
-class File:
+class File():
     id: str
     identifiers: cdaidentifier
     label: str
@@ -26,6 +26,10 @@ class File:
     subjects: list
     research_subjects: list
     specimens: list
+
+    def to_dict(obj):
+        return asdict(obj)
+
 
 @dataclass
 class Files:

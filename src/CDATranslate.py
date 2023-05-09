@@ -79,6 +79,37 @@ def testingParse(graphqlresults, mappingdata, graphqlindex):
                             tempjson = {}
                             finalarray = {}
     return finallist
+
+def parseEntry(graphqlresults, mappingdata, entryjson, instancejson):
+    #finaljson = {}
+    for originalfield, originalvalue in graphqlresults.items():
+        if isinstance(originalvalue, dict):
+            #Process as dicitonary
+            print("Dictionary Parse")
+        elif isinstance(originalvalue, list):
+            #process as a list
+            print('List parse')
+        else:
+            #Not nested
+            print("Normal parse")
+            cdafieldlist = testingGetMappedKeys(originalfield, mappingdata)
+            for entry in cdafieldlist:
+                for cdadomain, cdafields in entry.items():
+                    for cdafield in cdafields:
+                        if cdafield in instancejson:
+                            if isinstance(instancejson[cdafield], list):
+                                instancejson[cdafield].append(originalvalue)
+                            else:
+                                instancejson[cdafield] = originalvalue
+                        else:
+                            #Has to be entryjson
+                            if isinstance(entryjson[cdafield], list):
+                                entryjson[cdafield].append(originalvalue)
+                            else:
+                                entryjson[cdafield] = originalvalue
+    entryjson["identifiers"] = instancejson
+    return entryjson
+
                 
 
 def testingGetMappedKeys(sourcefield, fullmappingjson):
