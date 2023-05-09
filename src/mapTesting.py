@@ -5,6 +5,7 @@ import argparse
 import pprint
 import cdsQueries as cdsq
 import CDATranslate as cdt
+import CDA_dataclass as dc
 
 def main(args):
     #Empty dictionaries for each of the CDA nodes
@@ -37,6 +38,28 @@ def main(args):
     studydata = cdt.getGraphQLJSON(CDSAPI, studyQuery)
     tempjson = cdt.testingParse(studydata, mappingdata,'study')
     pprint.pprint(tempjson)
+
+    #Question 2 - Can a dataclass work better than a custom json job
+
+    fileQuery = """
+    {
+        file{
+            file_id
+        }
+    }
+    """
+
+    filelist = dc.Files
+    filedata = cdt.getGraphQLJSON(CDSAPI, fileQuery)
+    for file in filedata['data']['file']:
+        filelist.id = file['file_id']
+
+    pprint.pprint(filelist)
+    pprint.pprint(filelist.File.id)
+
+
+    
+
     
 
 if __name__ == "__main__":
