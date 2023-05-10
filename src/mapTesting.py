@@ -15,27 +15,55 @@ def main(args):
     cdafinal = {}
 
     CDSAPI = "https://dataservice.datacommons.cancer.gov/v1/graphql/"
+    REPO = "CDS"
 
     model.init()
     cdsq.init()
     mappingdata = cdt.readTransformFile(args.transformfile)
 
     #Files
-    filedata = cdt.getGraphQLJSON(CDSAPI,cdsq.file_info)
-    templist = []
-    for file in filedata['data']['file']:
-        newJSON = cdt.parseEntry(file, mappingdata, model.file, model.identifiers, "CDS")
-        templist.append(newJSON)
-    cdafinal['file'] = templist
+    #filedata = cdt.getGraphQLJSON(CDSAPI,cdsq.file_info)
+    #templist = []
+    #for file in filedata['data']['file']:
+    #    newJSON = cdt.parseEntry(file, mappingdata, model.file, model.identifiers, REPO)
+    #    templist.append(newJSON)
+    filelist = cdt.getAndProcessData(CDSAPI,cdsq.file_info, 'file', mappingdata, model.file, model.identifiers, REPO)
+    cdafinal['file'] = filelist
 
     #Diagnosis
-    diagdata = cdt.getGraphQLJSON(CDSAPI, cdsq.diagnosis_info)
-    templist = []
-    for entry in diagdata['data']['diagnosis']:
-        newJSON = cdt.parseEntry(entry, mappingdata, model.diagnosis, model.identifiers, "CDS")
-        templist.append(newJSON)
-    cdafinal['diagnosis'] = templist
-    pprint.pprint(cdafinal)
+    diaglist = cdt.getAndProcessData(CDSAPI, cdsq.diagnosis_info,'diagnosis', mappingdata, model.diagnosis, model.identifiers, REPO)
+    cdafinal['diagnosis'] = diaglist
+   # diagdata = cdt.getGraphQLJSON(CDSAPI, cdsq.diagnosis_info)
+   # templist = []
+   # for entry in diagdata['data']['diagnosis']:
+   #     newJSON = cdt.parseEntry(entry, mappingdata, model.diagnosis, model.identifiers, REPO)
+   #     templist.append(newJSON)
+   # cdafinal['diagnosis'] = templist
+
+    #Treatment
+    treatlist = cdt.getAndProcessData(CDSAPI, cdsq.treatment_info, 'treatment', mappingdata, model.treatment, model.identifiers, REPO)
+    cdafinal['treatment'] = treatlist
+
+    #Specimen
+    speclist = cdt.getAndProcessData(CDSAPI, cdsq.sample_info, 'sample', mappingdata, model.specimen, model.identifiers, REPO)
+    cdafinal['specimen'] = speclist
+
+    #Sujbect
+    sublist = cdt.getAndProcessData(CDSAPI, cdsq.basic_subject_info, 'participant', mappingdata, model.subject, model.identifiers, REPO)
+    cdafinal['subject'] = sublist
+
+    #ResearchSubject
+    rslist = cdt.getAndProcessData(CDSAPI, cdsq.research_subject_info, 'participant', mappingdata, model.research_subject, model.identifiers, REPO)
+    cdafinal['research_subject'] = rslist
+
+    if args.output is not None:
+        cdaoutput = json.dumps(cdafinal, indent=4)
+        f = open(args.output, "w")
+        f.write(cdaoutput)
+        f.close()
+
+    if args.verbose:
+        pprint.pprint(cdafinal)
 
 
 

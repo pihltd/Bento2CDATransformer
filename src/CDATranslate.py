@@ -81,18 +81,37 @@ def testingParse(graphqlresults, mappingdata, graphqlindex):
                             finalarray = {}
     return finallist
 
+def locationSort(cdafield, originalvalue, domainjson, instancejson):
+    #Common sorting routine
+    if cdafield in instancejson:
+        if isinstance(instancejson[cdafield], list):
+            instancejson[cdafield].append(originalvalue)
+        else:
+            instancejson[cdafield] = originalvalue
+    else:
+        #Has to be in domainjson
+        if isinstance(domainjson[cdafield], list):
+            domainjson[cdafield].append(originalvalue)
+        else:
+            domainjson[cdafield] = originalvalue
+    return domainjson, instancejson
+
 def parseEntry(graphqlresults, mappingdata, entryjson, instancejson, datacommons):
     #finaljson = {}
     for originalfield, originalvalue in graphqlresults.items():
         if isinstance(originalvalue, dict):
             #Process as dicitonary
-            print("Dictionary Parse")
+            print("Dictionary parse")
             print(originalvalue)
-            sys.exit()
+            for field, value in originalvalue.items():
+                print(field)
+                cdafieldlist = getMappedKey(field, mappingdata)
+                for cdafield in cdafieldlist:
+                    entryjson, instancejson = locationSort(cdafield, value, entryjson, instancejson)     
         elif isinstance(originalvalue, list):
             #process as a list
             print('List parse')
-            print(originalvalue)
+            #print(originalvalue)
             sys.exit()
         else:
             #Not nested
@@ -101,19 +120,10 @@ def parseEntry(graphqlresults, mappingdata, entryjson, instancejson, datacommons
             for entry in cdafieldlist:
                 for cdadomain, cdafields in entry.items():
                     for cdafield in cdafields:
-                        if cdafield in instancejson:
-                            if isinstance(instancejson[cdafield], list):
-                                instancejson[cdafield].append(originalvalue)
-                            else:
-                                instancejson[cdafield] = originalvalue
-                        else:
-                            #Has to be entryjson
-                            if isinstance(entryjson[cdafield], list):
-                                entryjson[cdafield].append(originalvalue)
-                            else:
-                                entryjson[cdafield] = originalvalue
+                        entryjson, instancejson = locationSort(cdafield, originalvalue,  entryjson, instancejson)
+
     instancejson['system'] = datacommons
-    entryjson["identifiers"] = instancejson
+    entryjson['identifiers'] = instancejson
     return entryjson
 
                 
@@ -129,6 +139,15 @@ def testingGetMappedKeys(sourcefield, fullmappingjson):
         for cdanode, cdafieldlist in entry.items():
             mappinglist.append({cdanode:cdafieldlist})
     return mappinglist
+
+def getAndProcessData(graphqlendpint, graphqlquery, domain, mappingdata, sectionmodel, identifiersmodel, repository):
+    querydata = getGraphQLJSON(graphqlendpint,graphqlquery)
+    templist = []
+    for entry in querydata['data'][domain]:
+        newJSON = parseEntry(entry, mappingdata, sectionmodel, identifiersmodel, repository)
+        templist.append(newJSON)
+    
+    return templist
         
 
 def validateJSON(schema, cdajson):

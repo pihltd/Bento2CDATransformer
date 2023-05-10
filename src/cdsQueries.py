@@ -112,3 +112,18 @@ def init():
     }
     """
 
+global research_subject_info
+research_subject_info = """
+    {
+    participant{
+        participant_id
+        diagnoses{
+        primary_diagnosis
+                primary_site
+        }
+        samples{
+        sample_id
+        }
+    }
+    }
+"""
