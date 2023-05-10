@@ -2,6 +2,7 @@
 from python_graphql_client import GraphqlClient
 import jsonschema
 import yaml
+import sys
 
 def getGraphQLJSON(apiurl, query):
     # For use with a Bento GraphQL endpoint.  Returns query results as JSON
@@ -80,18 +81,22 @@ def testingParse(graphqlresults, mappingdata, graphqlindex):
                             finalarray = {}
     return finallist
 
-def parseEntry(graphqlresults, mappingdata, entryjson, instancejson):
+def parseEntry(graphqlresults, mappingdata, entryjson, instancejson, datacommons):
     #finaljson = {}
     for originalfield, originalvalue in graphqlresults.items():
         if isinstance(originalvalue, dict):
             #Process as dicitonary
             print("Dictionary Parse")
+            print(originalvalue)
+            sys.exit()
         elif isinstance(originalvalue, list):
             #process as a list
             print('List parse')
+            print(originalvalue)
+            sys.exit()
         else:
             #Not nested
-            print("Normal parse")
+            #print("Normal parse")
             cdafieldlist = testingGetMappedKeys(originalfield, mappingdata)
             for entry in cdafieldlist:
                 for cdadomain, cdafields in entry.items():
@@ -107,6 +112,7 @@ def parseEntry(graphqlresults, mappingdata, entryjson, instancejson):
                                 entryjson[cdafield].append(originalvalue)
                             else:
                                 entryjson[cdafield] = originalvalue
+    instancejson['system'] = datacommons
     entryjson["identifiers"] = instancejson
     return entryjson
 

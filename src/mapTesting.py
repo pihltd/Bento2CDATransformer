@@ -20,12 +20,21 @@ def main(args):
     cdsq.init()
     mappingdata = cdt.readTransformFile(args.transformfile)
 
+    #Files
     filedata = cdt.getGraphQLJSON(CDSAPI,cdsq.file_info)
     templist = []
     for file in filedata['data']['file']:
-        newJSON = cdt.parseEntry(file, mappingdata, model.file, model.identifiers)
+        newJSON = cdt.parseEntry(file, mappingdata, model.file, model.identifiers, "CDS")
         templist.append(newJSON)
     cdafinal['file'] = templist
+
+    #Diagnosis
+    diagdata = cdt.getGraphQLJSON(CDSAPI, cdsq.diagnosis_info)
+    templist = []
+    for entry in diagdata['data']['diagnosis']:
+        newJSON = cdt.parseEntry(entry, mappingdata, model.diagnosis, model.identifiers, "CDS")
+        templist.append(newJSON)
+    cdafinal['diagnosis'] = templist
     pprint.pprint(cdafinal)
 
 

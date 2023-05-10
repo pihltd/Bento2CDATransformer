@@ -4,9 +4,8 @@ field_mappings:
   file_id: #CDS
     - file: #CDA domain/node
       - id #CDA field
-      - identifer.field_name
-      - identifier.value
       - drs_uri
+      - identifiers
   file_name:
     - file:
       - label
@@ -45,10 +44,10 @@ field_mappings:
   participant_id:
     - subject:
       - id
-      - identifier.value
+      - identifiers
     - research_subject:
       - id
-      - identifier.value
+      - identifiers
   organism_species:
     - subject:
       - species
@@ -73,7 +72,7 @@ field_mappings:
   diagnosis_id:
     - diagnosis:
       - id
-      - identifier.value
+      - identifiers
   primary_diagnosis:
     - diagnosis:
       - primary_diagnosis
@@ -98,7 +97,7 @@ field_mappings:
   sample_id:
     - specimen:
       - id
-      - identifier.value
+      - identifiers
   sample_age_at_collection:
     - specimen:
       - days_to_collection
