@@ -6,20 +6,33 @@ import pprint
 import cdsQueries as cdsq
 import CDATranslate as cdt
 import CDA_dataclass as dc
-from dataclasses import  asdict
 import CDSJSON_model as model
-#import dataclasses
+import importlib
+import sys
 
 def main(args):
+    #Read the config file
+    configs = cdt.readTransformFile(args.configfile)
+    pprint.pprint(configs)
+    #sys.exit()
+
+    #Import the query python module indicated in the config file
+    #This uses importlib
+    #https://stackoverflow.com/questions/64916281/importing-modules-dynamically-in-python-3-x
+    q = importlib.import_module(configs['query_module'])
+    q.init()
+    pprint.pprint(q.file_info)
+    #sys.exit()
+
     #Empty final JSON doc
     cdafinal = {}
 
-    CDSAPI = "https://dataservice.datacommons.cancer.gov/v1/graphql/"
-    REPO = "CDS"
+    #CDSAPI = "https://dataservice.datacommons.cancer.gov/v1/graphql/"
+    #REPO = "CDS"
 
     model.init()
-    cdsq.init()
-    mappingdata = cdt.readTransformFile(args.transformfile)
+    #cdsq.init()
+    mappingdata = cdt.readTransformFile(configs['field_mapping_file'])
 
     #Files
     #filedata = cdt.getGraphQLJSON(CDSAPI,cdsq.file_info)
@@ -27,8 +40,11 @@ def main(args):
     #for file in filedata['data']['file']:
     #    newJSON = cdt.parseEntry(file, mappingdata, model.file, model.identifiers, REPO)
     #    templist.append(newJSON)
-    filelist = cdt.getAndProcessData(CDSAPI,cdsq.file_info, 'file', mappingdata, model.file, model.identifiers, REPO)
+    #filelist = cdt.getAndProcessData(CDSAPI,cdsq.file_info, 'file', mappingdata, model.file, model.identifiers, REPO)
+    filelist = cdt.getAndProcessData(configs['graphql_url'],q.file_info, configs['file_keyword'], mappingdata,model.file, model.identifiers, configs['data_source'])
     cdafinal['file'] = filelist
+    pprint.pprint(cdafinal)
+    sys.exit()
 
     #Diagnosis
     diaglist = cdt.getAndProcessData(CDSAPI, cdsq.diagnosis_info,'diagnosis', mappingdata, model.diagnosis, model.identifiers, REPO)
@@ -122,11 +138,12 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("-c", "--configfile", required=True, help="Configuraion yaml file")
     parser.add_argument("-v", "--verbose", action="store_true",help="Enable verbose feedback" )
-    parser.add_argument("-t", "--transformfile", required=True, help="Name of the transform yaml file")
-    parser.add_argument("-s", "--schema", required=True, help="JSON Schemafile")
+    #parser.add_argument("-t", "--transformfile", required=True, help="Name of the transform yaml file")
+    #parser.add_argument("-s", "--schema", required=True, help="JSON Schemafile")
     parser.add_argument("-o", "--output", help="Output file name")
-    parser.add_argument("-c", "--check_validation", action="store_true", help="Run validation against the schema supplied with -s")
+    #parser.add_argument("-c", "--check_validation", action="store_true", help="Run validation against the schema supplied with -s")
 
     args = parser.parse_args()
     main(args)

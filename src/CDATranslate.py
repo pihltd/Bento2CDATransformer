@@ -11,6 +11,7 @@ def getGraphQLJSON(apiurl, query):
     return jsondata
 
 def readTransformFile(yamlfile):
+    #Rename to readYamlFile
     #Reads a yaml mapping file, returns a JSON object of it
     with open(yamlfile, "r") as stream:
         transformdata = yaml.safe_load(stream)

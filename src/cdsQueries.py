@@ -1,3 +1,4 @@
+#Turn this into a class file
 def init():
     global testquery
     testquery = """
