@@ -1,11 +1,17 @@
 data_source: CDS
 graphql_url: https://dataservice.datacommons.cancer.gov/v1/graphql/
 file_keyword: file
+file_identifier: file.file_id
 diagnosis_keyword: diagnosis
+diagnosis_identifier: diagnosis.diagnosis_id
 treatment_keyword: treatment
+treatment_identifier: treatment.treatment_id
 specimen_keyword: sample
+specimen_identifier: specimen.specimen_id
 subject_keyword: participant
+subject_identifier: subject.subject_id
 research_subject_keyword: participant
+research_subject_identifier: subject.subject_id
 query_module: cdsQueries
 field_mapping_file: test_map.yaml
 json_schema: cda_metadata_submission.schem.json

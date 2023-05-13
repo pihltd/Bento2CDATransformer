@@ -5,7 +5,7 @@ field_mappings:
     - file: #CDA domain/node
       - id #CDA field
       - drs_uri
-      - identifiers
+      - value
   file_name:
     - file:
       - label
@@ -41,13 +41,16 @@ field_mappings:
       - member_of_research_project
     - subject:
       - subject_associated_projects
+  data_types:
+    - diagnosis:
+      - data_modality
   participant_id:
     - subject:
       - id
-      - identifiers
+      - value
     - research_subject:
       - id
-      - identifiers
+      - value
   organism_species:
     - subject:
       - species
@@ -72,7 +75,7 @@ field_mappings:
   diagnosis_id:
     - diagnosis:
       - id
-      - identifiers
+      - value
   primary_diagnosis:
     - diagnosis:
       - primary_diagnosis

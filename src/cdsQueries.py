@@ -8,6 +8,19 @@ def init():
         }
     }
     """
+    global nested_test_query
+    nested_test_query = """
+    {
+        file{
+            samples{
+                sample_id
+                participant{
+                    participant_id
+                }
+            }
+        }
+    }
+    """
     
     global file_info
     file_info ="""
@@ -18,6 +31,17 @@ def init():
             file_type
             file_size
             md5sum
+            study{
+                data_types
+                phs_accession
+                study_acronym
+            }
+            samples{
+                sample_id
+                participant{
+                    participant_id
+                }
+            }
         }
     }"""
 

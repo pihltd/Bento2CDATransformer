@@ -3,6 +3,7 @@ from python_graphql_client import GraphqlClient
 import jsonschema
 import yaml
 import sys
+import CDSJSON_model as model
 
 def getGraphQLJSON(apiurl, query):
     # For use with a Bento GraphQL endpoint.  Returns query results as JSON
@@ -20,68 +21,30 @@ def readTransformFile(yamlfile):
 def getMappedKey(sourcefield, fullmappingjson):
     # Will return a list of CDA field name from the mapping json.
     mappingjson = fullmappingjson['field_mappings']
-    mapping = mappingjson[sourcefield]
-    for node, mappinglist in mapping.items():
-        return mappinglist
+    if sourcefield in mappingjson:
+        if sourcefield == 'participant_id':
+            print("participant id first position")
+        mapping = mappingjson[sourcefield]
+        if isinstance(mapping, list):
+            for entry in mapping:
+                for field, mappinglist in entry.items():
+                    if field == "participant_id":
+                        print("participant_id at second position")
+                    return mappinglist
+        else:
+            for node, mappinglist in mapping.items():
+                if node == "participant_id":
+                    print("Participant id third position")
+                if isinstance(mappinglist, dict):
+                    for newfield, newlist in mappinglist.items():
+                        if newfield == "participant_id":
+                            print("Participant id fourth position")
+                        return newlist
+                else:
+                    return mappinglist
+    else:
+        return None
     
-def genericInfoParse(graphqlresults, mappingdata, graphqlindex):
-    #First pass parse of data returned from graphql queries.  The graphqlindex is the field name after 'data' in graphql results
-    finalarray = []
-    tempjson = {}
-    #mappings = mappingdata['field_mappings']
-    for instance in graphqlresults['data'][graphqlindex]:
-        for cdsfield,cdsvalue in instance.items():
-            if isinstance(cdsvalue, dict):
-                #Process dictionary
-                for field, value in cdsvalue.items():
-                    mappedlist = getMappedKey(field, mappingdata)
-                    for newfield in mappedlist:
-                        tempjson[newfield] = value
-            elif isinstance(cdsvalue, list):
-                #Process list
-                for entry in cdsvalue:
-                    if isinstance(entry,dict):
-                        for field, value in entry.items():
-                            mappedlist = getMappedKey(field, mappingdata)
-                            for newfield in mappedlist:
-                                tempjson[newfield] = value
-                    #May need and if isinstance(entry, list), but no examples yet
-                            
-            else:
-                #Not nested data, process
-                mappedlist = getMappedKey(cdsfield, mappingdata)
-                for newfield in mappedlist:
-                    tempjson[newfield] = cdsvalue
-        finalarray.append(tempjson)
-    return finalarray
-
-def testingParse(graphqlresults, mappingdata, graphqlindex):
-    #Experimental version of genericInfoParse.  
-    finalarray = {}
-    tempjson = {}
-    finallist = []
-    for instance in graphqlresults['data'][graphqlindex]:
-        for originalfield, originalvalue in instance.items():
-            if isinstance(originalvalue, dict):
-                #Process as dictionary
-                print("Dictionary Parse")
-            elif isinstance(originalvalue, list):
-                #Process as list
-                print("List Parse")
-            else:
-                #Not nested
-                print("Normal Parse")
-                cdafieldlist = testingGetMappedKeys(originalfield, mappingdata)
-                for entry in cdafieldlist:
-                    for cdadomain,cdafields in entry.items():
-                        for cdafield in cdafields:
-                            tempjson[cdafield]= originalvalue 
-                            finalarray[cdadomain] = tempjson
-                            finallist.append(finalarray)
-                            tempjson = {}
-                            finalarray = {}
-    return finallist
-
 def locationSort(cdafield, originalvalue, domainjson, instancejson):
     #Common sorting routine
     if cdafield in instancejson:
@@ -89,7 +52,7 @@ def locationSort(cdafield, originalvalue, domainjson, instancejson):
             instancejson[cdafield].append(originalvalue)
         else:
             instancejson[cdafield] = originalvalue
-    else:
+    if cdafield in domainjson:
         #Has to be in domainjson
         if isinstance(domainjson[cdafield], list):
             domainjson[cdafield].append(originalvalue)
@@ -97,55 +60,72 @@ def locationSort(cdafield, originalvalue, domainjson, instancejson):
             domainjson[cdafield] = originalvalue
     return domainjson, instancejson
 
-def parseEntry(graphqlresults, mappingdata, entryjson, instancejson, datacommons):
-    #finaljson = {}
+
+def parseEntry(graphqlresults, mappingdata, entryjson, instancejson, datacommons, identifier_field):
     for originalfield, originalvalue in graphqlresults.items():
-        if isinstance(originalvalue, dict):
-            #Process as dicitonary
-            print("Dictionary parse")
-            print(originalvalue)
-            for field, value in originalvalue.items():
-                print(field)
-                cdafieldlist = getMappedKey(field, mappingdata)
-                for cdafield in cdafieldlist:
-                    entryjson, instancejson = locationSort(cdafield, value, entryjson, instancejson)     
-        elif isinstance(originalvalue, list):
-            #process as a list
-            print('List parse')
-            #print(originalvalue)
-            sys.exit()
-        else:
-            #Not nested
-            #print("Normal parse")
-            cdafieldlist = testingGetMappedKeys(originalfield, mappingdata)
-            for entry in cdafieldlist:
-                for cdadomain, cdafields in entry.items():
-                    for cdafield in cdafields:
-                        entryjson, instancejson = locationSort(cdafield, originalvalue,  entryjson, instancejson)
+        entryjson, instancejson = parseDecider(originalfield, originalvalue,entryjson, instancejson, mappingdata)
 
     instancejson['system'] = datacommons
+    instancejson['field_name'] = identifier_field
     entryjson['identifiers'] = instancejson
     return entryjson
 
-                
+def stringParse(originalfield, originalvalue, mappingdata, entryjson, instancejson):
+    cdafieldlist = getMappedKey(originalfield, mappingdata)
+    for cdafield in cdafieldlist:
+        entryjson, instancejson = locationSort(cdafield, originalvalue,entryjson, instancejson)
+    return entryjson, instancejson
 
-def testingGetMappedKeys(sourcefield, fullmappingjson):
-    #Experimental version of getMappedKeys
-    mappingjson = fullmappingjson['field_mappings']
-    mapping = mappingjson[sourcefield]
-    mappinglist = []
-    # mapping should now be a list of dict
-    for entry in mapping:
-        #cdanode is the CDA domain, cdafield is a list of fields from that node
-        for cdanode, cdafieldlist in entry.items():
-            mappinglist.append({cdanode:cdafieldlist})
-    return mappinglist
+def dictParse(originalvalue,mappingdata, entryjson, instancejson ):
+    for field, value in originalvalue.items():
+        cdafieldlist = getMappedKey(field, mappingdata)
+        if cdafieldlist is not None: #This is needed to week out 0 length returns from nested graphql queries
+            for cdafield in cdafieldlist:
+                entryjson, instancejson = locationSort(cdafield, value, entryjson, instancejson)
+    return entryjson, instancejson
 
-def getAndProcessData(graphqlendpint, graphqlquery, domain, mappingdata, sectionmodel, identifiersmodel, repository):
+def listParse(originalvalue, mappingdata, entryjson, instancejson):
+    for item in originalvalue:
+        if isinstance(item, dict):
+            entryjson, instancejson = dictParse(item, mappingdata, entryjson, instancejson)
+        elif isinstance(item, list):
+            #This is the recursivy bit
+            entryjson, instancejson = listParse(item, mappingdata, entryjson, instancejson)
+        else:
+            entryjson, instancejson = stringParse(item, mappingdata, entryjson, instancejson)
+    return entryjson, instancejson
+
+def parseDecider(originalfield, originalvalue, entryjson, instancejson, mappingdata):
+    #All this does is figure out if the value is a dict, list, or string and call the appropriate routine
+    if isinstance(originalvalue, list):
+        #Call list processing routine
+        listParse(originalvalue, mappingdata, entryjson, instancejson)
+    elif isinstance(originalvalue, dict):
+        #Call dict processing routine
+        entryjson, instancejson = dictParse(originalvalue, mappingdata, entryjson, instancejson)
+    else:
+        #Call string processing routine
+        entryjson, instancejson = stringParse(originalfield, originalvalue,mappingdata, entryjson, instancejson)
+    return entryjson, instancejson
+        
+
+
+#def getAndProcessData(graphqlendpint, graphqlquery, domain, mappingdata, sectionmodel, identifiersmodel, repository,identifier_field):
+def getAndProcessData(graphqlendpint, graphqlquery, domain, mappingdata,repository,identifier_field):
+    modelselections = { 'file': model.file, 'diagnosis':model.diagnosis, 'treatement':model.treatment, 'sample':model.specimen,
+                        'participant':model.subject, }
+
+    #BUG:  Sectionmodel and identifiermodel don't get "fresh" copies after every for entry loop, so lists keep getting longer
     querydata = getGraphQLJSON(graphqlendpint,graphqlquery)
     templist = []
     for entry in querydata['data'][domain]:
-        newJSON = parseEntry(entry, mappingdata, sectionmodel, identifiersmodel, repository)
+        print(entry)
+        #newJSON = parseEntry(entry, mappingdata, sectionmodel, identifiersmodel, repository, identifier_field)
+        model.init()
+        sectionmodel = model.file
+        identifiermodel = model.identifiers
+        newJSON = parseEntry(entry, mappingdata, sectionmodel, identifiermodel, repository, identifier_field)
+
         templist.append(newJSON)
     
     return templist
