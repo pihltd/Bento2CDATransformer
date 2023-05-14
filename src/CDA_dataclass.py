@@ -2,34 +2,30 @@ from dataclasses import dataclass, asdict
 from typing import List
 
 @dataclass
-class cdaidentifier:
-    system: str
-    field_name: str
-    value: str
+class Cdaidentifier:
+    system: str = None
+    field_name: str = None
+    value: str = None
 
 @dataclass
-class File():
-    id: str
-    identifiers: cdaidentifier
-    label: str
-    data_category: str
-    data_type: str
-    file_format: str
-    drs_uri: str
-    byte_size: int
-    checksum: str
-    data_modality: str
-    imaging_modality: str
-    dbgap_accession_number: str
-    imaging_series: str
-    associated_projects: list
-    subjects: list
-    research_subjects: list
-    specimens: list
-
-    def to_dict(obj):
-        return asdict(obj)
-
+class File:
+    id: str = None
+    identifiers: Cdaidentifier = None
+    label: str = None
+    data_category: str = None
+    data_type: str = None
+    file_format: str = None
+    drs_uri: str = None
+    byte_size: int = None
+    checksum: str = None
+    data_modality: str = None
+    imaging_modality: str = None
+    dbgap_accession_number: str = None
+    imaging_series: str = None
+    associated_projects: list = None
+    subjects: list = None
+    research_subjects: list = None
+    specimens: list = None
 
 @dataclass
 class Files:

@@ -1,0 +1,111 @@
+Source: CDA
+Models:
+  - CDS
+Props:
+  file:
+    id:
+      CDS:
+        - file_id:
+          Parents: file
+    label:
+      CDS:
+        - file_name:
+          Parents: file
+    file_format:
+      CDS:
+        - file_type:
+          Parents: file
+    drs_uri:
+      CDS:
+        - file_id:
+          Parents: file
+    byte_size:
+      CDS:
+        - file_size:
+          Parents: file
+    checksum:
+      CDS:
+        - md5sum:
+          Parents: file
+    data_modality:
+      CDS:
+        - data_types:
+          Parents: study
+    dbgap_accession_number:
+      CDS:
+        - phs_accession:
+          Parents: study
+    associated_projects:
+      CDS:
+        - study_acronym:
+          Parents: study
+    subjects: 
+      CDS:
+        - participant_id:
+          Parents: participant
+    research_subjects:
+      CDS:
+        - participant_id:
+          Parents: participant
+    specimens:
+      CDS:
+        - sample_id:
+          Parents: samples
+  diagnosis:
+    id:
+      CDS:
+        - diagnosis_id:
+          Parents: diagnosis
+    primary_diagnosis:
+      CDS:
+        - primary_diagnosis:
+          Parents: diagnosis
+    age_at_diagnosis:
+      CDS:
+        - age_at_diagnosis:
+          Parents: diagnosis
+    morphology:
+      CDS:
+        - morphology:
+          Parents: diagnosis
+    stage:
+      CDS:
+        - tumor_stage_clinical_m:
+          Parents: diagnosis
+        - tumor_stage_clinical_n:
+          Parents: diagnosis
+        - tumor_stage_clinical_t:
+          Parents: diagnosis
+    grade:
+      CDS:
+        - tumor_grade:
+          Parents: diagnosis
+  specimen:
+    id:
+      CDS:
+        - sample_id:
+          Parents: sample
+    days_to_collection:
+      CDS:
+        - sample_age_at_collection:
+          Parents: sample
+    anatomical_site:
+      CDS:
+        - sample_anatomic_site:
+          Parents: sample
+    specimen_type:
+      CDS:
+        - sample_type:
+          Parents: sample
+    associated_project:
+      CDS:
+        - study_acronym:
+          Parents: study
+    derived_from_specimen:
+      CDS:
+        - derived_from_specimen:
+          Parents: sample
+
+
+  
+
