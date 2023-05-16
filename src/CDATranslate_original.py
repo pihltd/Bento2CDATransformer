@@ -3,7 +3,7 @@ from python_graphql_client import GraphqlClient
 import jsonschema
 import yaml
 import sys
-import CDSJSON_model as model
+import CDAJSON_model as model
 
 def getGraphQLJSON(apiurl, query):
     # For use with a Bento GraphQL endpoint.  Returns query results as JSON

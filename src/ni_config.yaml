@@ -14,5 +14,5 @@ subject_identifier: subject.subject_id
 research_subject_keyword: participant
 research_subject_identifier: subject.subject_id
 query_module: cdsQueries
-field_mapping_file: Flipped_CDA-CDS_mapping.yaml
+field_mapping_file: CDA-CDS_mapping.yaml
 json_schema: cda_metadata_submission.schem.json

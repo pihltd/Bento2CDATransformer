@@ -4,7 +4,7 @@
 import argparse
 import pprint
 import test_data as td
-import CDSJSON_model as model
+import CDAJSON_model as model
 import CDATranslate as cdt
 import cdsQueries as cdsq
 import json

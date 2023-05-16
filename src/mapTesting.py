@@ -5,7 +5,7 @@ import argparse
 import pprint
 import cdsQueries as cdsq
 import CDATranslate as cdt
-import CDSJSON_model as model
+import CDAJSON_model as model
 import importlib
 import sys
 

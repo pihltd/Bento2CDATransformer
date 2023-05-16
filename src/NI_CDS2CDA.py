@@ -5,7 +5,7 @@ import argparse
 import pprint
 import test_data as td
 import yaml
-import CDSJSON_model as model
+import CDSASON_model as model
 import sys
 
 def yaml2JSON(yamlfile):
