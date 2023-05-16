@@ -105,6 +105,52 @@ Props:
       CDS:
         - derived_from_specimen:
           Parents: sample
+  subject:
+    id:
+      CDS:
+        - participant_id:
+          Parents: participant
+    species: 
+      CDS:
+        - organism_species:
+          Parents: study
+    sex:
+      CDS:
+        - gender:
+          Parents: participant
+    race:
+      CDS:
+        - race:
+          Parents: participant
+    ethnicity:
+      CDS:
+        - ethnicity:
+          Parents: participant
+    vital_status:
+      CDS:
+        - vital_status:
+          Parents: diagnosis
+    subject_associated_projects:
+      CDS:
+        - study_acronym:
+          Parents: study
+  research_subject:
+    id:
+      CDS:
+        - participant_id:
+          Parents: participant
+    primary_diagnosis_condition:
+      CDS:
+        - disease_type:
+          Parents: diagnosis
+    primary_diagnosis_site:
+      CDS:
+        - primary_site: 
+          Parents: diagnosis
+    member_of_research_project:
+      CDS:
+        - study_name:
+          Parents: study
 
 
   
