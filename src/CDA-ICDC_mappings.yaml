@@ -1,0 +1,53 @@
+Source: CDA
+Models:
+  - ICDC
+Props:
+  file:
+    id:
+      ICDC:
+        - uuid:
+          Parents: file
+    label:
+      ICDC:
+        - file_name:
+          Parents: file
+    file_format:
+      ICDC:
+        - file_format:
+          Parents: file
+    drs_uri:
+      ICDC:
+        - file_location:
+          Parents: file
+    byte_size:
+      ICDC:
+        - file_size:
+          Parents: file
+    checksum:
+      ICDC:
+        - md5sum:
+          Parents: file
+    data_modality:
+      ICDC:
+        - file_type:
+          Parents: file
+    dbgap_accession_number:
+      ICDC:
+        - accession_id:
+          Parents: study
+    associated_projects:
+      ICDC:
+        - clinical_study_name:
+          Parents: study
+    subjects:
+      ICDC:
+        - canine_individual:
+          Parents: case
+    research_subjects:
+      ICDC:
+        - case_id:
+          Parents: case
+    specimens:
+      ICDC:
+        - sample_id:
+          Parents: biospecimen

@@ -49,6 +49,7 @@ def flatGraphQL(graphqlresults):
         else:
             flatpack[bentofield] = bentovalue
     return flatpack
+
 def flatProcessMainJSON(mainjson, flatgraphqldata, mappingsegment, datasource):
     #Flatten the grpahqldata
     #flatgraphqldata = flatGraphQL(graphqldata)
@@ -68,11 +69,12 @@ def flatProcessMainJSON(mainjson, flatgraphqldata, mappingsegment, datasource):
                             mainjson[cdafield] = flatgraphqldata[bentofield]
     return mainjson
 
-def parseIdentifiers(idjson, flatpack, identifier, datasource):
+def parseIdentifiers(idjson, flatpack, identifier, sourceidentifier, datasource):
     idjson['system'] = datasource
     idjson['field_name'] = identifier
-    fieldid = identifier.split(".").pop()
-    idjson['value'] = flatpack[fieldid]
+    #fieldid = identifier.split(".").pop()
+    #fieldid = sourceidentifier
+    idjson['value'] = flatpack[sourceidentifier]
     return idjson
 
 def validateJSON(schema, cdajson):

@@ -35,7 +35,7 @@ def main(args):
         model.init() #Apparently need to init model every round otherwise lists keep accumluation over rounds
         processed = cdt.flatProcessMainJSON(model.file,flatpack, mappingjson['Props'][configs['file_keyword']], configs['data_source'])
         #NEED to make sure the identifiers routine returns a list, not just an instance
-        identifiers = cdt.parseIdentifiers(model.identifiers, flatpack, configs['file_identifier'], configs['data_source'])
+        identifiers = cdt.parseIdentifiers(model.identifiers, flatpack, configs['file_identifier'], configs['source_file_identifier'],  configs['data_source'])
         processed['identifiers'].append(identifiers)
         finaljson['file'].append(processed)
 
@@ -46,7 +46,7 @@ def main(args):
          flatpack = cdt.flatGraphQL(diagnosisgraphqldata)
          model.init()
          processed = cdt.flatProcessMainJSON(model.diagnosis,flatpack,mappingjson['Props'][configs['diagnosis_keyword']],configs['data_source'])
-         identifiers = cdt.parseIdentifiers(model.identifiers, flatpack, configs['diagnosis_identifier'], configs['data_source'])
+         identifiers = cdt.parseIdentifiers(model.identifiers, flatpack, configs['diagnosis_identifier'], configs['source_diagnosis_identifier'], configs['data_source'])
          processed['identifiers'].append(identifiers)
          finaljson['diagnosis'].append(processed)
 
@@ -61,11 +61,12 @@ def main(args):
          flatpack = cdt.flatGraphQL(specquerydata)
          model.init()
          processed = cdt.flatProcessMainJSON(model.specimen, flatpack, mappingjson['Props'][configs['specimen_map_keyword']], configs['data_source'])
-         identifiers = cdt.parseIdentifiers(model.identifiers, flatpack, configs['specimen_identifier'], configs['data_source'])
+         identifiers = cdt.parseIdentifiers(model.identifiers, flatpack, configs['specimen_identifier'], configs['source_specimen_identifier'], configs['data_source'])
          processed['identifiers'].append(identifiers)
          finaljson['specimen'].append(processed)
 
-    cdt.validateJSON(finaljson)
+    if args.schemavalidate:
+          cdt.validateJSON(configs['json_schema'], finaljson)
     
     if args.output is not None:
          printIt(finaljson, args.output)
@@ -82,6 +83,7 @@ if __name__ == "__main__":
     parser.add_argument("-v", "--verbose", action="store_true",help="Enable verbose feedback" )
     parser.add_argument("-o", "--output", help="Output file name")
     parser.add_argument("-t", "--testmode", action="store_true", help ="Run in test mode, limited data")
+    parser.add_argument("-s", "--schemavalidate", action="store_true", help = "Validate results against JSON schema")
 
     args = parser.parse_args()
     main(args)

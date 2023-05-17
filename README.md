@@ -77,16 +77,22 @@ This file contains a number of parameters that Bento2CDA needs to run.  This fil
 - __graphql_url__: GraphQL endpoing URL that will be used to run queries
 - __file_keyword__:  Bento GraphQL returns JSON that is itemized by two keywords  'data', and the keyword for the primary node.  This field provides the keyword used for the file primary node.
 - __file_identifier__: This is a static value used to populate fields in the _identifiers_ section of the CDA standard JSON for file
+- __source_file_identifier__: The field name needed to parse the value from the GraphQL response
 - __diagnosis_keyword__: Same as file_keyword, but for diagnosis queries
 - __diagnosis_identifier__: Same as file_identifier but for the diagnosis section
+- __source_diagnosis_identifier__: Same as source_file_identifier but for the diagnosis section
 - __specimen_keyword__: Same as file_keyword, but for specimen queries
 - __specimen_identifier__: Same as file_identifier but for the specimen section
+- __source_specimen_identifier__:  ame as source_file_identifier but for the specimen section
 - __treatment_keyword__: Same as file_keyword, but for treatment queries
 - __treatment_identifier__: Same as file_identifier but for the treatment section
+- __source_treatment_identifier__:
 - __subject_keyword__:  Same as file_keyword, but for subject queries
 - __subject_identifier__: Same as file_identifier but for the subject section
+- __source_subject_identifier__:
 - __research_subject_keyword__: Same as file_keyword, but for research_subject queries (frequently the same as subject)
 - __research_subject_identifier__: Same as file_identifier but for the research_subject section
+- __source_research_subject_identifier__:
 - __query_module__: File that contains the GraphQL queries approprate for the data source
 - __field_mapping_file__:  YAML file that contains the mappings between CDA and the Bento instance.  See __CDA-CDS_mapping.yaml__ for an example.
 - __json_schema__: The CDA provided JSON schema file
